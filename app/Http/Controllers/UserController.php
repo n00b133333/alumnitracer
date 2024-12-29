@@ -28,6 +28,7 @@ class UserController extends Controller
         // Validate the incoming request data
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
+            'middle_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'student_ID' => 'required|string|max:255|unique:users,student_ID',
             'birthday' => 'required|date',
@@ -35,12 +36,13 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'course_ID' => 'required|exists:courses,id',
-            'employment_status_ID' => 'required|exists:employment_statuses,id',
+          
         ]);
 
         // Create a new user and store it in the database
         $user = User::create([
             'first_name' => $validated['first_name'],
+            'middle_name' => $validated['middle_name'],
             'last_name' => $validated['last_name'],
             'student_ID' => $validated['student_ID'],
             'birthday' => $validated['birthday'],
@@ -48,7 +50,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']), // Hash the password
             'course_ID' => $validated['course_ID'],
-            'employment_status_ID' => $validated['employment_status_ID'],
+         
         ]);
 
         // Return the created user as a JSON response
@@ -93,6 +95,7 @@ class UserController extends Controller
         // Validate incoming request data
         $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
+            'middle_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
             'student_ID' => 'sometimes|required|string|max:255|unique:users,student_ID,' . $id,
             'birthday' => 'sometimes|required|date',
@@ -100,7 +103,7 @@ class UserController extends Controller
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'sometimes|required|string|min:8',
             'course_ID' => 'sometimes|required|exists:courses,id',
-            'employment_status_ID' => 'sometimes|required|exists:employment_statuses,id',
+            
         ]);
 
         // Find the user by ID
@@ -108,7 +111,7 @@ class UserController extends Controller
 
         // Update the user with new data
         $user->update($request->only([
-            'first_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID', 'employment_status_ID'
+            'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID'
         ]));
 
         // If password is updated, hash it

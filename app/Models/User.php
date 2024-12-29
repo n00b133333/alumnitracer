@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID', 'employment_status_ID'
+        'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID'
     ];
 
     public function course()
@@ -27,10 +27,7 @@ class User extends Authenticatable
         return $this->belongsTo(Courses::class, 'course_ID');
     }
 
-    public function employmentStatus()
-    {
-        return $this->belongsTo(Employment_status::class, 'employment_status_ID');
-    }
+
 
     /**
      * The attributes that should be hidden for serialization.

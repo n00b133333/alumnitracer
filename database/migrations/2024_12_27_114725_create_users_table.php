@@ -23,7 +23,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->foreignId('course_ID')->constrained('courses')->onDelete('cascade'); // Foreign key for courses table
-            $table->foreignId('employment_status_ID')->constrained('employment_statuses')->onDelete('cascade'); // Foreign key for employment statuses table
             $table->rememberToken();
             $table->timestamps();
             $table->engine = 'InnoDB'; // Ensure InnoDB engine for foreign keys
