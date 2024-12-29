@@ -139,18 +139,33 @@ class UserController extends Controller
 
     public function login(Request $request)
 {
+    // Validate the request input
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string|min:8',
+    ]);
+
+    // Find the user by email
     $user = User::where('email', $request->email)->first();
 
+    // Check if user exists and the password matches
     if ($user && Hash::check($request->password, $user->password)) {
-        // Create token
+        // Revoke all previous tokens (optional, for security)
+        $user->tokens()->delete();
+
+        // Create a new token
         $token = $user->createToken('alumnitracer')->plainTextToken;
 
         return response()->json([
+            'message' => 'Login successful',
             'access_token' => $token,
             'token_type' => 'Bearer',
-        ]);
+            'user' => $user, // Optionally include user details
+        ], 200);
     }
 
-    return response()->json(['error' => 'Unauthorized'], 401);
+    // Return unauthorized error response
+    return response()->json(['error' => 'Invalid credentials'], 401);
 }
+
 }
