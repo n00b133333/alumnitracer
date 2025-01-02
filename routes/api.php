@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EmploymentStatusQuestionsController;
+use App\Http\Controllers\QuestionChoicesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\EmploymentAnswerController;
 use App\Http\Controllers\EmploymentQuestionsController;
 use App\Http\Controllers\EmploymentStatusController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEmploymentStatusController;
 use Illuminate\Http\Request;
@@ -36,4 +38,6 @@ Route::apiResource('employmentquestions', EmploymentQuestionsController::class);
 Route::apiResource('employmentstatusquestions', EmploymentStatusQuestionsController::class);
 Route::apiResource('employmentanswer', EmploymentAnswerController::class);
 Route::apiResource('useremploymentstatus', UserEmploymentStatusController::class);
+Route::apiResource('notifications', NotificationsController::class);
+Route::apiResource('question_choices', QuestionChoicesController::class);
 Route::post('login',[UserController::class,'login']);
