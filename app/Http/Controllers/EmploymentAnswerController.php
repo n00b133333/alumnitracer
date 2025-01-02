@@ -13,7 +13,7 @@ class EmploymentAnswerController extends Controller
     public function index()
     {
         // Get all employment answers with related data
-        $employmentAnswers = Employment_answer::with(['employmentStatusQuestion', 'user'])->get();
+        $employmentAnswers = Employment_answer::with(['employmentStatusQuestion', 'user', 'userEmploymentStatus'])->get();
 
         return response()->json($employmentAnswers, 200);
     }
@@ -23,21 +23,31 @@ class EmploymentAnswerController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the incoming request data
-        $validated = $request->validate([
-            'employment_status_question_ID' => 'required|exists:employment_status_questions,id',
-            'user_ID' => 'required|exists:users,id',
-            'answer' => 'required|string|max:255',
-        ]);
+        try {
+            // Validate the incoming request data
+            $validated = $request->validate([
+                'employment_status_question_ID' => 'required|exists:employment_status_questions,id',
+                'user_ID' => 'required|exists:users,id',
+                'user_employment_status_ID' => 'required|exists:user_employment_statuses,id',
+                'answer' => 'required|string|max:255',
+            ]);
 
-        // Create a new employment answer
-        $employmentAnswer = Employment_answer::create($validated);
+            // Create a new employment answer
+            $employmentAnswer = Employment_answer::create($validated);
 
-        return response()->json([
-            'message' => 'Employment answer created successfully.',
-            'data' => $employmentAnswer,
-        ], 201); // 201 indicates resource created
+            return response()->json([
+                'message' => 'Employment answer created successfully.',
+                'data' => $employmentAnswer,
+            ], 201); // 201 indicates resource created
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error storing employment answer',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -45,7 +55,7 @@ class EmploymentAnswerController extends Controller
     public function show(Employment_answer $employment_answer)
     {
         // Return the specified employment answer with related data
-        $employmentAnswer = $employment_answer->load(['employmentStatusQuestion', 'user']);
+        $employmentAnswer = $employment_answer->load(['employmentStatusQuestion', 'user', 'userEmploymentStatus']);
 
         return response()->json($employmentAnswer, 200);
     }
@@ -59,6 +69,7 @@ class EmploymentAnswerController extends Controller
         $validated = $request->validate([
             'employment_status_question_ID' => 'sometimes|exists:employment_status_questions,id',
             'user_ID' => 'sometimes|exists:users,id',
+            'user_employment_status_ID' => 'sometimes|exists:user_employment_statuses,id',
             'answer' => 'sometimes|string|max:255',
         ]);
 

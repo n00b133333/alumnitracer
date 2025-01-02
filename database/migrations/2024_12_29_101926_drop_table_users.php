@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         // Drop the table
-        Schema::dropIfExists('employment_questions');
+        // Schema::dropIfExists('employment_questions');
     }
 
     /**

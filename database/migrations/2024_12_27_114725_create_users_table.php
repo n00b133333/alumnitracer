@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('middle_name');
             $table->string('last_name');
             $table->string('student_ID');
+            $table->string('sex');
             $table->date('birthday');
+            $table->integer('contact_number');
             $table->string('address');
+            $table->string('civil_status');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
