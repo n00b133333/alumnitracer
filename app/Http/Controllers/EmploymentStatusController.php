@@ -13,7 +13,7 @@ class EmploymentStatusController extends Controller
     public function index()
     {
         try {
-            $employmentStatuses = Employment_status::all();
+            $employmentStatuses = Employment_status::with('questions.answers')->get();
             return response()->json([
                 'message' => 'Employment statuses retrieved successfully',
                 'data' => $employmentStatuses,

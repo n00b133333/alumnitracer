@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string(column: 'status')->default('Active');
             $table->foreignId('course_ID')->constrained('courses')->onDelete('cascade'); // Foreign key for courses table
             $table->rememberToken();
             $table->timestamps();

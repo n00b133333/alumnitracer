@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Logs;
 use App\Models\User;
+use App\Models\User_employment_status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -10,14 +12,30 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        // Retrieve all users from the database
-        $users = User::all();
+    public function index(Request $request)
+{
+    // Get the 'status' parameter from the request (defaults to 'Active' if not provided)
+    $status = $request->get('status', 'Active');
+    
+    // Retrieve users with the specified status and their related course
+    $users = User::with(['course', 'employmentStatus.status'])->where('status', $status)
+      ->addSelect(['status' => User_employment_status::select('employment_status_ID')
+          ->whereColumn('user_ID', 'users.id')
+          ->latest()
+          ->limit(1)]) // Add the latest employment_status_ID as 'status'
+      ->get();
+    
 
-        // Return the users as a JSON response
-        return response()->json($users);
-    }
+    // Concatenate first, middle, and last names
+    $users = $users->map(function ($user) {
+        $user->full_name = $user->first_name . ' ' . $user->middle_name . ' ' . $user->last_name;
+        return $user;
+    });
+
+    // Return the filtered users as a JSON response
+    return response()->json($users);
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -30,6 +48,9 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'middle_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'sex' => 'required|string|max:255',
+            'civil_status' => 'required|string|max:255',
+            'contact_number' => 'required|string|max:11',
             'student_ID' => 'required|string|max:255|unique:users,student_ID',
             'birthday' => 'required|date',
             'address' => 'required|string|max:255',
@@ -46,6 +67,9 @@ class UserController extends Controller
             'last_name' => $validated['last_name'],
             'student_ID' => $validated['student_ID'],
             'birthday' => $validated['birthday'],
+            'sex' => $validated['sex'],
+            'contact_number' => $validated['contact_number'],
+            'civil_status' => $validated['civil_status'],
             'address' => $validated['address'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']), // Hash the password
@@ -81,7 +105,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         // Find the user by ID, or return a 404 if not found
-        $user = User::findOrFail($id);
+        $user = User::with('statuses.status', 'statuses.answers', 'employmentStatus.status')->findOrFail($id);
 
         // Return the user as a JSON response
         return response()->json($user);
@@ -99,11 +123,14 @@ class UserController extends Controller
             'last_name' => 'sometimes|required|string|max:255',
             'student_ID' => 'sometimes|required|string|max:255|unique:users,student_ID,' . $id,
             'birthday' => 'sometimes|required|date',
+            'sex' => 'required|string|max:255',
+            'civil_status' => 'required|string|max:255',
+            'contact_number' => 'required|string|max:11',
             'address' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'sometimes|required|string|min:8',
             'course_ID' => 'sometimes|required|exists:courses,id',
-            
+            'status' => 'sometimes|required'
         ]);
 
         // Find the user by ID
@@ -111,7 +138,7 @@ class UserController extends Controller
 
         // Update the user with new data
         $user->update($request->only([
-            'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID'
+            'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID', 'sex', 'contact_number', 'civil_status'
         ]));
 
         // If password is updated, hash it
@@ -121,8 +148,29 @@ class UserController extends Controller
         }
 
         // Return the updated user as a JSON response
-        return response()->json($user);
+        return response()->json([
+            'message' => 'Profile Updated Successfully',
+            'user' => $user->load('employmentStatus.status')
+        ]);
     }
+
+    public function archive($id, Request $request)
+{
+    // Find the alumni by ID
+    $alumni = User::findOrFail($id);
+
+    // Update the alumni's status to 'Archived'
+    $alumni->status = $request->status;
+    $alumni->save();
+
+    Logs::create([
+        'title' => 'Changed Alumni Status.',
+        'description' => 'Alumni status with student number of '.$alumni->student_ID.' changed to '.$request->status,
+        'admin_ID' => $request->user_ID
+    ]);
+    // Return a success response
+    return response()->json(['message' => 'Alumni archived successfully']);
+}
 
     /**
      * Remove the specified resource from storage.
@@ -144,12 +192,12 @@ class UserController extends Controller
 {
     // Validate the request input
     $request->validate([
-        'email' => 'required|email',
+        'student_ID' => 'required',
         'password' => 'required|string|min:8',
     ]);
 
     // Find the user by email
-    $user = User::where('email', $request->email)->first();
+    $user = User::with('course', 'employmentStatus.status')->where('student_ID', $request->student_ID)->first();
 
     // Check if user exists and the password matches
     if ($user && Hash::check($request->password, $user->password)) {
@@ -170,5 +218,29 @@ class UserController extends Controller
     // Return unauthorized error response
     return response()->json(['error' => 'Invalid credentials'], 401);
 }
+
+public function change_password($id, Request $request) {
+    // Validate the incoming request
+    $request->validate([
+        'password' => 'required|string|min:8', // Current password validation
+        'new_password' => 'required|string|min:8', // New password validation
+    ]);
+
+    // Get the authenticated admin
+    $admin = User::findOrFail($id); // Assuming the admin is authenticated
+
+    // Check if the provided current password matches the admin's password
+    if (!Hash::check($request->password, $admin->password)) {
+        return response()->json(['error' => 'Current password is incorrect'], 400);
+    }
+
+    // Update the password
+    $admin->password = bcrypt($request->new_password);
+    $admin->save();
+
+    // Respond with success
+    return response()->json(['message' => 'Password successfully changed'], 200);
+}
+
 
 }

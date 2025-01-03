@@ -12,12 +12,16 @@ class Employment_answer extends Model
         protected $table = 'employment_answers';
         protected $guarded = [];
 
+        protected $fillable = [
+            'employment_questions_ID','user_ID', 'user_employment_status_ID', 'answer'
+        ];
+
         /**
          * Define the relationships for the foreign keys.
          */
-        public function employmentStatusQuestion()
+        public function question()
         {
-            return $this->belongsTo(Employment_Status_Questions::class, 'employment_status_question_ID');
+            return $this->belongsTo(Employment_Questions::class, 'employment_questions_ID');
         }
 
         public function user()
@@ -29,6 +33,8 @@ class Employment_answer extends Model
         {
             return $this->belongsTo(User_Employment_Status::class, 'user_employment_status_ID');
         }
+
+       
     }
 
 

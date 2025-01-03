@@ -101,4 +101,61 @@ class AdminController extends Controller
             'message' => 'Admin deleted successfully',
         ], 200);
     }
+
+
+    
+    public function login(Request $request)
+{
+    // Validate the request input
+    $request->validate([
+        'email' => 'required',
+        'password' => 'required|string|min:8',
+    ]);
+
+    // Find the user by email
+    $user = Admin::where('email', $request->email)->first();
+
+    // Check if user exists and the password matches
+    if ($user && Hash::check($request->password, $user->password)) {
+        // Revoke all previous tokens (optional, for security)
+        $user->tokens()->delete();
+
+        // Create a new token
+        $token = $user->createToken('alumnitracer')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user, 
+        ], 200);
+    }
+
+    // Return unauthorized error response
+    return response()->json(['error' => 'Invalid credentials'], 401);
+}
+
+public function change_password($id, Request $request) {
+    // Validate the incoming request
+    $request->validate([
+        'password' => 'required|string|min:8', // Current password validation
+        'new_password' => 'required|string|min:8', // New password validation
+    ]);
+
+    // Get the authenticated admin
+    $admin = Admin::findOrFail($id); // Assuming the admin is authenticated
+
+    // Check if the provided current password matches the admin's password
+    if (!Hash::check($request->password, $admin->password)) {
+        return response()->json(['error' => 'Current password is incorrect'], 400);
+    }
+
+    // Update the password
+    $admin->password = bcrypt($request->new_password);
+    $admin->save();
+
+    // Respond with success
+    return response()->json(['message' => 'Password successfully changed'], 200);
+}
+
 }

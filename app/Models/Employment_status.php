@@ -9,5 +9,10 @@ class Employment_status extends Model
 {
     /** @use HasFactory<\Database\Factories\EmploymentStatusFactory> */
     protected $guarded=[];
-  
+
+    public function questions ()
+    {
+
+        return $this->hasMany(Employment_Questions::class, 'employment_status_ID');
+    }
 }

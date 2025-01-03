@@ -17,11 +17,19 @@ class Employment_Status_Questions extends Model
     // Define relationships
     public function employmentQuestion()
     {
-        return $this->belongsTo(Employment_Questions::class, 'employment_question_ID');
+        return $this->belongsTo(Employment_Questions::class, 'employment_questions_ID');
     }
 
     public function employmentStatus()
     {
         return $this->belongsTo(Employment_status::class, 'employment_status_ID');
     }
+
+    public function answers()
+    {
+        return $this->hasMany(Question_Choices::class, 'employment_questions_ID');
+    
+    }
+
+    
 }

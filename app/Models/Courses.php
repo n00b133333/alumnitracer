@@ -13,4 +13,5 @@ class Courses extends Model
     {
         return $this->hasMany(User::class, 'course_ID');
     }
+
 }

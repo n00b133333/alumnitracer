@@ -54,7 +54,9 @@ class UserEmploymentStatusController extends Controller
     public function show($id)
     {
         // Retrieve a specific user employment status
-        $status = User_employment_status::find($id);
+        // $status = User_employment_status::find($id);
+
+        $status = User_employment_status::with('answers.question', 'status')->find($id);
 
         if (!$status) {
             return response()->json(['message' => 'User employment status not found'], 404);
@@ -120,4 +122,5 @@ class UserEmploymentStatusController extends Controller
 
         return response()->json(['message' => 'User employment status deleted successfully'], 200);
     }
+
 }

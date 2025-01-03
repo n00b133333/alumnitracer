@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name','middle_name', 'last_name', 'student_ID','sex', 'birthday','contact_number', 'address','civil_status', 'email', 'password', 'course_ID'
+        'first_name','middle_name', 'last_name', 'student_ID','sex', 'birthday','contact_number', 'address','civil_status', 'email', 'password', 'course_ID', 'status'
     ];
 
     public function course()
@@ -27,8 +27,24 @@ class User extends Authenticatable
         return $this->belongsTo(Courses::class, 'course_ID');
     }
 
+    public function employmentStatus()
+    {
+        // Assuming 'user_ID' is the foreign key in 'User_employment_statuses'
+        return $this->hasOne(User_employment_status::class, 'user_ID')->latest();
+    }
 
+    public function statuses()
+    {
+        // Assuming 'user_ID' is the foreign key in 'User_employment_statuses'
+        return $this->hasMany(User_employment_status::class, 'user_ID')->orderBy('created_at', 'desc');
+    }
 
+    
+
+    public function answers()
+    {
+        return $this->hasMany(Employment_answer::class, 'user_ID');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
