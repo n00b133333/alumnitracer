@@ -84,8 +84,20 @@ class AnnouncementController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         //
+        $ann = Announcement::findOrFail($id);
+        Logs::create([
+            'title' => 'Announcement Deleted.',
+            'description' => 'Announcement deleted with an ID of '.$ann->id,
+            'admin_ID' => $request->user_ID
+        ]);
+
+      
+
+        $ann->delete();
+
+        return response()->json(data: ['message' => 'Announcement deleted successfully']);
     }
 }
