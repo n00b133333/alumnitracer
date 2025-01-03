@@ -154,23 +154,52 @@ class UserController extends Controller
         ]);
     }
 
-    public function archive($id, Request $request)
+    public function archive(Request $request, $id)
 {
-    // Find the alumni by ID
-    $alumni = User::findOrFail($id);
-
-    // Update the alumni's status to 'Archived'
-    $alumni->status = $request->status;
-    $alumni->save();
-
-    Logs::create([
-        'title' => 'Changed Alumni Status.',
-        'description' => 'Alumni status with student number of '.$alumni->student_ID.' changed to '.$request->status,
-        'admin_ID' => $request->user_ID
+    // Validate the incoming request
+    $validated = $request->validate([
+        'status' => 'required|string|in:Active,Archived', // Ensure valid status values
+        'user_ID' => 'required|integer', // Validate the admin ID
     ]);
-    // Return a success response
-    return response()->json(['message' => 'Alumni archived successfully']);
+
+    try {
+        // Find the alumni by ID or throw a 404 error
+        $alumni = User::findOrFail($id);
+
+        // Update the alumni's status
+        $previousStatus = $alumni->status;
+        $alumni->status = $validated['status'];
+        $alumni->save();
+
+        // Log the status change
+        Logs::create([
+            'title' => 'Changed Alumni Status',
+            'description' => sprintf(
+                'Alumni status with student number %s changed from %s to %s',
+                $alumni->student_ID,
+                $previousStatus,
+                $validated['status']
+            ),
+            'admin_ID' => $validated['user_ID'],
+            'new_value' => json_encode([
+                'student_ID' => $alumni->student_ID,
+                'previous_status' => $previousStatus,
+                'new_status' => $validated['status'],
+            ]), // Store the change details as JSON
+        ]);
+
+        // Return a success response
+        return response()->json(['message' => 'Alumni status updated successfully.'], 200);
+
+    } catch (\Exception $e) {
+        // Handle any exceptions
+        return response()->json([
+            'message' => 'Failed to update alumni status.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 }
+
 
     /**
      * Remove the specified resource from storage.

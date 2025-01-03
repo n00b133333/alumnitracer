@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->string('announcement_title');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->string('description')->nullable();
             $table->string('status')->default('Active');
             $table->timestamps();

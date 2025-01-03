@@ -11,6 +11,7 @@ class Logs extends Model
     protected $fillable = [
         'title',
         'description',
-        'admin_ID'
+        'admin_ID',
+        'new_value'
     ];
 }

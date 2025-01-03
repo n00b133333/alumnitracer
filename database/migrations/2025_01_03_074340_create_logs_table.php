@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->foreignId('admin_ID')->constrained('admins')->onDelete('cascade'); 
+            $table->json('new_value')->nullable();
             $table->timestamps();
         });
     }

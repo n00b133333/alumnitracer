@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Courses;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 
 class CoursesController extends Controller
@@ -24,39 +25,52 @@ class CoursesController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        try {
-            // Validate incoming request data
-            $validatedData = $request->validate([
-                'course_name' => 'required|string|max:255',
-                'course_code' => 'required|string|max:50|unique:courses,course_code',
-            ]);
-    
-            // Create a new course and store it in the database
-            $course = Courses::create($validatedData);
-    
-            // Return the created course as a JSON response
-            return response()->json([
-                'success' => true,
-                'message' => 'Course created successfully.',
-                'data' => $course,
-            ], 201); // 201 indicates resource created
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Handle validation errors
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error.',
-                'errors' => $e->errors(), // Detailed validation errors
-            ], 422); // 422 indicates unprocessable entity
-        } catch (\Exception $e) {
-            // Handle other exceptions
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while creating the course.',
-                'error' => $e->getMessage(), // Include the exception message
-            ], 500); // 500 indicates server error
-        }
+{
+    try {
+        // Validate incoming request data
+        $validatedData = $request->validate([
+            'course_name' => 'required|string|max:255',
+            'course_code' => 'required|string|max:50|unique:courses,course_code',
+        ]);
+
+        // Create a new course and store it in the database
+        $course = Courses::create($validatedData);
+
+        // Log the creation of the course
+        Logs::create([
+            'title' => 'New Course Created',
+            'description' => sprintf(
+                'Course "%s" with code "%s" was created.',
+                $course->course_name,
+                $course->course_code
+            ),
+            'admin_ID' => $request->user_ID, // Ensure `user_ID` is sent in the request
+            'new_value' => json_encode($course->toArray()), // Store the course details as JSON
+        ]);
+
+        // Return the created course as a JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Course created successfully.',
+            'data' => $course,
+        ], 201); // 201 indicates resource created
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Handle validation errors
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error.',
+            'errors' => $e->errors(), // Detailed validation errors
+        ], 422); // 422 indicates unprocessable entity
+    } catch (\Exception $e) {
+        // Handle other exceptions
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred while creating the course.',
+            'error' => $e->getMessage(), // Include the exception message
+        ], 500); // 500 indicates server error
     }
+}
+
     
 
     /**
