@@ -105,7 +105,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         // Find the user by ID, or return a 404 if not found
-        $user = User::with('statuses.status', 'statuses.answers', 'employmentStatus.status')->findOrFail($id);
+        $user = User::with('statuses.status', 'statuses.answers', 'employmentStatus.status', 'course')->findOrFail($id);
 
         // Return the user as a JSON response
         return response()->json($user);
