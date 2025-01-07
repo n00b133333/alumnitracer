@@ -123,14 +123,21 @@ class UserController extends Controller
             'last_name' => 'sometimes|required|string|max:255',
             'student_ID' => 'sometimes|required|string|max:255|unique:users,student_ID,' . $id,
             'birthday' => 'sometimes|required|date',
-            'sex' => 'required|string|max:255',
-            'civil_status' => 'required|string|max:255',
-            'contact_number' => 'required|string|max:11',
+            'sex' => 'sometimes|required|string|max:255',
+            'civil_status' => 'sometimes|required|string|max:255',
+            'contact_number' => 'sometimes|required|string|max:11',
             'address' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'sometimes|required|string|min:8',
             'course_ID' => 'sometimes|required|exists:courses,id',
-            'status' => 'sometimes|required'
+            'status' => 'sometimes|required',
+            'region' => 'sometimes|required|string|max:255',
+            'province' =>'sometimes|required|string|max:255',
+            'location' =>'sometimes|required|string|max:255',
+            'specialization' =>'sometimes|required|string|max:255',
+            'year' =>'sometimes|required|string|max:4',
+            'honors' =>'sometimes|required|string|max:255',
+            'prof_exams' =>'sometimes|required|json',
         ]);
 
         // Find the user by ID
@@ -138,7 +145,7 @@ class UserController extends Controller
 
         // Update the user with new data
         $user->update($request->only([
-            'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID', 'sex', 'contact_number', 'civil_status'
+            'first_name','middle_name', 'last_name', 'student_ID', 'birthday', 'address', 'email', 'password', 'course_ID', 'sex', 'contact_number', 'civil_status', 'region', 'province', 'location', 'specialization', 'year', 'honors', 'prof_exams'
         ]));
 
         // If password is updated, hash it

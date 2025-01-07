@@ -24,9 +24,19 @@ return new class extends Migration
             $table->string('civil_status');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string(column: 'status')->default('Active');
-            $table->foreignId('course_ID')->constrained('courses')->onDelete('cascade'); // Foreign key for courses table
+            $table->string('password')->nullable();
+            $table->string(column: 'status')->default('Deactivated');
+            $table->foreignId('course_ID')->constrained('courses')->onDelete('cascade');
+            $table->string('region')->nullable();
+            $table->string('province')->nullable();
+            $table->string('location')->nullable();
+            $table->string('specialization')->nullable();
+            $table->string('year')->nullable();
+            $table->string('honors')->nullable();
+            $table->json('prof_exams')->nullable();
+            $table->string('activation_token')->nullable();
+            $table->boolean('is_activated')->default(false);
+            $table->timestamp('token_expires_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->engine = 'InnoDB'; // Ensure InnoDB engine for foreign keys

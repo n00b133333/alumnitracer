@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmploymentStatusQuestionsController;
 use App\Http\Controllers\QuestionChoicesController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +55,10 @@ Route::apiResource('announcements', AnnouncementController::class);
 Route::post('login',[UserController::class,'login']);
 
 Route::post('admin/login',[AdminController::class,'login']);
+Route::get('/account/activate/{token}', [AuthController::class, 'activateAccount']);
+Route::post('/validate-token', [AuthController::class, 'validateToken']);
+Route::post('/resend-activation-link', [AuthController::class, 'resendActivationLink']);
+Route::post('/account/set-password', [AuthController::class, 'setPassword']);
 
 Route::put('admin/change_password/{id}',[AdminController::class,'change_password']);
 Route::put('user/change_password/{id}',[UserController::class,'change_password']);
@@ -60,3 +66,9 @@ Route::get('dashboard', [PagesController::class, 'dashboard']);
 Route::get('logs', [PagesController::class, 'logs']);
 Route::patch('/alumni/{id}/archive', [UserController::class, 'archive']);
 Route::patch('/announcement/{id}/archive', [AnnouncementController::class, 'archive']);
+
+ROute::get('/analytics', [AnalyticsController::class, 'job_placements']);
+Route::get('/analytics1', [AnalyticsController::class, 'getEmploymentStatusPerMonth']);
+
+Route::post('upload-csv', [PagesController::class, 'uploadCSV']);
+Route::get('/official_list', [PagesController::class, 'official_list']);

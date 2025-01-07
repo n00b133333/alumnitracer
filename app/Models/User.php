@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name','middle_name', 'last_name', 'student_ID','sex', 'birthday','contact_number', 'address','civil_status', 'email', 'password', 'course_ID', 'status'
+        'first_name','middle_name', 'last_name', 'student_ID','sex', 'birthday','contact_number', 'address','civil_status', 'email', 'password', 'course_ID', 'status', 'region', 'province', 'location', 'specialization', 'year', 'honors', 'prof_exams', 'is_activated', 'activation_token', 'token_expires_at'
     ];
 
     public function course()
@@ -67,4 +67,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function generateActivationToken()
+    {
+        // Generate a random activation token
+        $token = Str::random(60);
+
+        // Set expiration time (e.g., 24 hours from now)
+        $expiresAt = now()->addHours(24);
+
+        // Save the token and its expiration time
+        $this->activation_token = $token;
+        $this->token_expires_at = $expiresAt;
+        $this->save();
+    }
+
+
 }
