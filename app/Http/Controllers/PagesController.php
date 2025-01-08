@@ -191,9 +191,17 @@ public function uploadCSV(Request $request)
         }
 
         fclose($handle);
+        
     }
+    $users = User::with('course')->get();
+    
+        // Concatenate first, middle, and last names
+        $users = $users->map(function ($user) {
+            $user->full_name = $user->first_name . ' ' . $user->middle_name . ' ' . $user->last_name;
+            return $user;
+        });
 
-    return response()->json(['message' => 'CSV data uploaded successfully.'], 200);
+    return response()->json(['message' => 'CSV data uploaded successfully.', 'data' => $users], 200);
 }
 
 
