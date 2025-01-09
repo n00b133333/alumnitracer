@@ -48,7 +48,7 @@ public function logs(Request $request)
 
     return response()->json([
         'logs' => $logs,
-       
+
     ]);
 }
 
@@ -68,7 +68,7 @@ public function logs(Request $request)
 //         if (($handle = fopen($path, 'r')) !== false) {
 //             $header = fgetcsv($handle);
 //             $requiredHeaders = [
-//                 'first_name', 'middle_name', 'last_name', 'student_ID', 'birthday', 'sex', 
+//                 'first_name', 'middle_name', 'last_name', 'student_ID', 'birthday', 'sex',
 //                 'civil_status', 'contact_number', 'address', 'email', 'password', 'course_ID'
 //             ];
 
@@ -93,7 +93,7 @@ public function logs(Request $request)
 //                     'contact_number' => $data[7],
 //                     'address' => $data[8],
 //                     'email' => $data[9],
-//                     'password' => bcrypt($data[10]), 
+//                     'password' => bcrypt($data[10]),
 //                     'course_ID' => $data[11],
 //                     'created_at' => now(),
 //                     'updated_at' => now(),
@@ -201,8 +201,8 @@ public function uploadCSV(Request $request)
 public function official_list(Request $request)
 {
     // Get the 'status' parameter from the request (defaults to 'Active' if not provided)
-  
-    
+
+
     // Retrieve users with the specified status and their related course
     $users = User::with(['course', 'employmentStatus.status'])
       ->addSelect(['status' => User_employment_status::select('employment_status_ID')
@@ -210,7 +210,7 @@ public function official_list(Request $request)
           ->latest()
           ->limit(1)]) // Add the latest employment_status_ID as 'status'
       ->get();
-    
+
 
     // Concatenate first, middle, and last names
     $users = $users->map(function ($user) {
