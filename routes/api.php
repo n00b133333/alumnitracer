@@ -67,8 +67,15 @@ Route::get('logs', [PagesController::class, 'logs']);
 Route::patch('/alumni/{id}/archive', [UserController::class, 'archive']);
 Route::patch('/announcement/{id}/archive', [AnnouncementController::class, 'archive']);
 
-ROute::get('/analytics', [AnalyticsController::class, 'job_placements']);
+Route::get('/analytics', [AnalyticsController::class, 'job_placements']);
 Route::get('/analytics1', [AnalyticsController::class, 'getEmploymentStatusPerMonth']);
+Route::get('/analytics2', [AnalyticsController::class, 'getPresentEmploymentStatus']);
+Route::get('/analytics3', [AnalyticsController::class, 'getPresentOccupation']);
+Route::get('/analytics4', [AnalyticsController::class, 'getPresentLineOfWork']);
+Route::get('/analytics5', [AnalyticsController::class, 'getPresentPlaceOfWork']);
+Route::get('/analytics6', [AnalyticsController::class, 'getPresentFirstJob']);
+Route::get('/analytics7', [AnalyticsController::class, 'getPresentReasonStaying']);
+
 
 Route::post('upload-csv', [PagesController::class, 'uploadCSV']);
 Route::get('/official_list', [PagesController::class, 'official_list']);
