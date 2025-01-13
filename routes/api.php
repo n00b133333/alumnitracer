@@ -75,6 +75,18 @@ Route::get('/analytics4', [AnalyticsController::class, 'getPresentLineOfWork']);
 Route::get('/analytics5', [AnalyticsController::class, 'getPresentPlaceOfWork']);
 Route::get('/analytics6', [AnalyticsController::class, 'getPresentFirstJob']);
 Route::get('/analytics7', [AnalyticsController::class, 'getPresentReasonStaying']);
+Route::get('/analytics8', [AnalyticsController::class, 'getITRelated']);
+Route::get('/analytics9', [AnalyticsController::class, 'getPresentReasonForAccept']);
+Route::get('/analytics10', [AnalyticsController::class, 'getPresentReasonForChanging']);
+Route::get('/analytics11', [AnalyticsController::class, 'getPresentStayFirstJob']);
+Route::get('/analytics12', [AnalyticsController::class, 'getPresentHowFind']);
+Route::get('/analytics13', [AnalyticsController::class, 'getPresentHowLong']);
+Route::get('/analytics14', [AnalyticsController::class, 'getPresentPositionFirst']);
+Route::get('/analytics15', [AnalyticsController::class, 'getPresentPositionPresent']);
+Route::get('/analytics16', [AnalyticsController::class, 'getPresentInitialGross']);
+Route::get('/analytics17', [AnalyticsController::class, 'getRelevantCurriculum']);
+Route::get('/analytics18', [AnalyticsController::class, 'getPresentCompetencies']);
+
 
 
 Route::post('upload-csv', [PagesController::class, 'uploadCSV']);

@@ -176,7 +176,7 @@ public function getPresentReasonStaying() {
         ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
         ->leftJoin('employment_answers', function($join) {
             $join->on('employment_answers.answer', '=', 'question_choices.choices')
-                 ->where('employment_answers.employment_questions_ID', 7); // Filter answers by question ID
+                 ->where('employment_answers.employment_questions_ID', 8); // Filter answers by question ID
         })
         ->select(
             'question_choices.id as choice_id',
@@ -190,5 +190,230 @@ public function getPresentReasonStaying() {
 
     return response()->json($data);
 }
+
+public function getITRelated() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 9); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 9) // Filter by question ID (in question_choices table)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+public function getPresentReasonForAccept() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 10); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 10) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentReasonForChanging() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 11); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 11) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentStayFirstJob() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 12); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 12) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentHowFind() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 13); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 13) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentHowLong() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 14); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 14) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentPositionFirst() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 15); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 15) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+
+public function getPresentPositionPresent() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 16); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 16) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentInitialGross() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 17); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 17) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+
+
+public function getRelevantCurriculum() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 18); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 18) // Filter by question ID (in question_choices table)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+public function getPresentCompetencies() {
+    $data = DB::table('question_choices')
+        ->join('employment_questions', 'question_choices.employment_questions_ID', '=', 'employment_questions.id')
+        ->leftJoin('employment_answers', function($join) {
+            $join->on('employment_answers.answer', '=', 'question_choices.choices')
+                 ->where('employment_answers.employment_questions_ID', 19); // Filter answers by question ID
+        })
+        ->select(
+            'question_choices.id as choice_id',
+            'question_choices.choices',
+            DB::raw('COUNT(employment_answers.id) as answer_count'), // Count answers that match
+            DB::raw('MAX(employment_answers.created_at) as latest_answer_date') // Get the latest answer date for each user
+        )
+        ->where('question_choices.employment_questions_ID', 19) // Filter by question ID (e.g., 1)
+        ->groupBy('question_choices.id', 'question_choices.choices')
+        ->get();
+
+    return response()->json($data);
+}
+
+
+
 
 }
