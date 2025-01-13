@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('specialization')->nullable();
             $table->string('year')->nullable();
             $table->string('honors')->nullable();
-            $table->json('prof_exams')->nullable();
+            $table->string('prof_exams')->nullable();
             $table->string('activation_token')->nullable();
             $table->boolean('is_activated')->default(false);
             $table->timestamp('token_expires_at')->nullable();

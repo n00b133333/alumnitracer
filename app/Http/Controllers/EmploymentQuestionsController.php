@@ -64,7 +64,7 @@ class EmploymentQuestionsController extends Controller
     public function show(string $id)
     {
         // Find the question by its ID, or return a 404 if not found
-        $question = Employment_Questions::findOrFail($id);
+        $question = Employment_Questions::with('answers')->findOrFail($id);
 
         // Return the question as a JSON response
         return response()->json($question);

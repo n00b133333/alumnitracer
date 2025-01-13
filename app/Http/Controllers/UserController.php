@@ -137,7 +137,7 @@ class UserController extends Controller
             'specialization' =>'sometimes|required|string|max:255',
             'year' =>'sometimes|required|string|max:4',
             'honors' =>'sometimes|required|string|max:255',
-            'prof_exams' =>'sometimes|required|json',
+            'prof_exams' =>'sometimes|required|string',
         ]);
 
         // Find the user by ID
