@@ -150,7 +150,26 @@ class EmploymentAnswerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employment_answer $employment_answer)
+    // public function update(Request $request, Employment_answer $employment_answer)
+    // {
+    //     // Validate the incoming request data
+    //     $validated = $request->validate([
+    //         'employment_question_ID' => 'sometimes|exists:employment_questions,id',
+    //         'user_ID' => 'sometimes|exists:users,id',
+    //         'user_employment_status_ID' => 'sometimes|exists:user_employment_statuses,id',
+    //         'answer' => 'sometimes|string|max:255',
+    //     ]);
+
+    //     // Update the employment answer
+    //     $employment_answer->update($validated);
+
+    //     return response()->json([
+    //         'message' => 'Employment answer updated successfully.',
+    //         'data' => $employment_answer,
+    //     ], 200);
+    // }
+
+    public function update(Request $request, User_employment_status $id)
     {
         // Validate the incoming request data
         $validated = $request->validate([
@@ -161,8 +180,12 @@ class EmploymentAnswerController extends Controller
         ]);
 
         // Update the employment answer
-        $employment_answer->update($validated);
 
+        $employment_answer = Employment_answer::where('employment_questions_ID', $validated['employment_question_ID'])->where('user_ID', $validated['user_ID'])->where('user_employment_status_ID', $validated['user_employment_status_ID'])->first();
+        
+        $employment_answer->answer = $validated['answer'];
+
+        $employment_answer->save();
         return response()->json([
             'message' => 'Employment answer updated successfully.',
             'data' => $employment_answer,
