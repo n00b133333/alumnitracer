@@ -31,7 +31,9 @@ class AnalyticsController extends Controller
                 'users.first_name as user_name',
                 'employment_statuses.id as status_id',
                 'employment_statuses.status as employment_status',
-                'latest_status.year' // Include the year the employment status was created
+                'latest_status.year',
+                'users.year as batch'
+                 // Include the year the employment status was created
             )
             ->get();
     
@@ -125,6 +127,7 @@ class AnalyticsController extends Controller
             'question_choices.choices',
             'users.id as user_id',
             'users.first_name as user_name',
+            
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
@@ -270,16 +273,28 @@ public function getPresentReasonStaying() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
+            'users.first_name as first_name',
+            'users.year as batch',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
+
+
+
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 9) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
 
-    // Add additional attributes or processing
-    $data = $this->addYearToData($data); 
+        $data = $this->addYearToData($data); // Add year attribute
 
     // Return the processed data as JSON
     return response()->json($data);
@@ -533,8 +548,5 @@ public function getPresentCompetencies() {
         $data = $this->addYearToData($data); 
     return response()->json($data);
 }
-
-
-
 
 }
