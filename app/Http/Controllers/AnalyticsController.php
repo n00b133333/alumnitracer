@@ -28,10 +28,17 @@ class AnalyticsController extends Controller
             ->join('employment_statuses', 'latest_status.employment_status_ID', '=', 'employment_statuses.id')
             ->select(
                 'users.id as user_id',
-                'users.first_name as user_name',
+              
                 'employment_statuses.id as status_id',
-                'employment_statuses.status as employment_status',
-                'users.year as year'
+                'employment_statuses.status as choices',
+                'users.first_name as first_name',
+                'users.year as year',
+                'users.middle_name',
+                'users.last_name',
+                'users.student_ID as student_id',
+                'users.email',
+                'users.address',
+                'users.contact_number',
                  // Include the year the employment status was created
             )
             ->get();
@@ -125,14 +132,23 @@ class AnalyticsController extends Controller
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 1)
-        ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
     
     
@@ -153,13 +169,22 @@ class AnalyticsController extends Controller
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.year',
-            'users.first_name as user_name',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 2) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.year','users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
     
     // Add year attribute
@@ -178,13 +203,22 @@ public function getPresentLineOfWork() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 5) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.year','users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
     
     // Add year attribute
@@ -203,13 +237,22 @@ public function getPresentPlaceOfWork() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 6) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
     
     // Add year attribute
@@ -227,13 +270,22 @@ public function getPresentFirstJob() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 7) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
     
     // Add year attribute
@@ -253,13 +305,22 @@ public function getPresentReasonStaying() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 8) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices', 'users.year','users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
     
     // Add year attribute
@@ -318,13 +379,22 @@ public function getPresentReasonStaying() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 10) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
         
         
@@ -344,13 +414,22 @@ public function getPresentReasonStaying() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 10) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices', 'users.year','users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
         
         
@@ -371,13 +450,22 @@ public function getPresentReasonStaying() {
             'question_choices.id as choice_id',
             'question_choices.choices',
             'users.id as user_id',
-            'users.first_name as user_name',
-            'users.year',
+            'users.first_name as first_name',
+            'users.year as year',
+            'users.middle_name',
+            'users.last_name',
+            'users.student_ID as student_id',
+            'users.email',
+            'users.address',
+            'users.contact_number',
             DB::raw('COUNT(employment_answers.id) as answer_count'),
             DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
         )
         ->where('question_choices.employment_questions_ID', 12) // Filter by question ID in question_choices table
-        ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+        ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
         ->get();
         
         
@@ -398,13 +486,22 @@ public function getPresentHowFind() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.first_name as user_name',
-        'users.year',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 13) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id','users.year', 'users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+        'users.last_name','users.student_ID',
+            'users.email',
+            'users.address','users.contact_number')
     ->get();
     
         
@@ -423,13 +520,22 @@ public function getPresentHowLong() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.first_name as user_name',
-        'users.year',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 14) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+    'users.last_name','users.student_ID',
+        'users.email',
+        'users.address','users.contact_number')
     ->get();
     
         
@@ -448,13 +554,22 @@ public function getPresentPositionFirst() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.first_name as user_name',
-        'users.year',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 15) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+    'users.last_name','users.student_ID',
+        'users.email',
+        'users.address','users.contact_number')
     ->get();
     
         
@@ -474,13 +589,22 @@ public function getPresentPositionPresent() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.first_name as user_name',
-        'users.year',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 16) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+    'users.last_name','users.student_ID',
+        'users.email',
+        'users.address','users.contact_number')
     ->get();
     
         
@@ -499,13 +623,22 @@ public function getPresentInitialGross() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.first_name as user_name',
-        'users.year',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 17) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices','users.year', 'users.id', 'users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+    'users.last_name','users.student_ID',
+        'users.email',
+        'users.address','users.contact_number')
     ->get();
     
         
@@ -526,13 +659,22 @@ public function getRelevantCurriculum() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.year',
-        'users.first_name as user_name',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 18) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id','users.year', 'users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+    'users.last_name','users.student_ID',
+        'users.email',
+        'users.address','users.contact_number')
     ->get();
     
         
@@ -551,13 +693,22 @@ public function getPresentCompetencies() {
         'question_choices.id as choice_id',
         'question_choices.choices',
         'users.id as user_id',
-        'users.first_name as user_name',
-        'users.year',
+        'users.first_name as first_name',
+        'users.year as year',
+        'users.middle_name',
+        'users.last_name',
+        'users.student_ID as student_id',
+        'users.email',
+        'users.address',
+        'users.contact_number',
         DB::raw('COUNT(employment_answers.id) as answer_count'),
         DB::raw('MAX(employment_answers.created_at) as latest_answer_date')
     )
     ->where('question_choices.employment_questions_ID', 19) // Filter by question ID in question_choices table
-    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.year','users.first_name')
+    ->groupBy('question_choices.id', 'question_choices.choices', 'users.id', 'users.first_name', 'users.year', 'users.middle_name',
+    'users.last_name','users.student_ID',
+        'users.email',
+        'users.address','users.contact_number')
     ->get();
     
         

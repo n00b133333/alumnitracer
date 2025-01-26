@@ -56,7 +56,7 @@ class UserEmploymentStatusController extends Controller
         // Retrieve a specific user employment status
         // $status = User_employment_status::find($id);
 
-        $status = User_employment_status::with('answers.question', 'status')->find($id);
+        $status = User_employment_status::with('answers.question', 'status','user')->find($id);
 
         if (!$status) {
             return response()->json(['message' => 'User employment status not found'], 404);

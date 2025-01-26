@@ -9,6 +9,7 @@ use App\Models\Courses;
 use App\Models\Logs;
 use App\Models\User;
 use App\Models\User_employment_status;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -48,7 +49,7 @@ public function logs(Request $request)
 
     return response()->json([
         'logs' => $logs,
-       
+
     ]);
 }
 
@@ -68,7 +69,7 @@ public function logs(Request $request)
 //         if (($handle = fopen($path, 'r')) !== false) {
 //             $header = fgetcsv($handle);
 //             $requiredHeaders = [
-//                 'first_name', 'middle_name', 'last_name', 'student_ID', 'birthday', 'sex', 
+//                 'first_name', 'middle_name', 'last_name', 'student_ID', 'birthday', 'sex',
 //                 'civil_status', 'contact_number', 'address', 'email', 'password', 'course_ID'
 //             ];
 
@@ -93,7 +94,7 @@ public function logs(Request $request)
 //                     'contact_number' => $data[7],
 //                     'address' => $data[8],
 //                     'email' => $data[9],
-//                     'password' => bcrypt($data[10]), 
+//                     'password' => bcrypt($data[10]),
 //                     'course_ID' => $data[11],
 //                     'created_at' => now(),
 //                     'updated_at' => now(),
@@ -134,7 +135,7 @@ public function uploadCSV(Request $request)
     if (($handle = fopen($path, 'r')) !== false) {
         $header = fgetcsv($handle); // Get the header row
 
-        // Map header fields to ensure it matches the columns in your CSV
+        // Expected headers
         $expectedHeaders = [
             'first_name', 'middle_name', 'last_name', 'student_ID', 'birthday', 'sex',
             'civil_status', 'contact_number', 'address', 'region', 'province',
@@ -151,6 +152,16 @@ public function uploadCSV(Request $request)
         // Loop through the file and save each record
         while (($row = fgetcsv($handle)) !== false) {
             $data = array_combine($header, $row);
+
+            // Format the birthday field to mm-dd-yyyy
+            try {
+                $data['birthday'] = Carbon::parse($data['birthday'])->format('m-d-Y');
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'Invalid date format in the CSV file for birthday.',
+                    'error' => $e->getMessage(),
+                ], 400);
+            }
 
             // Check if the record already exists based on unique attributes (e.g., student_ID or email)
             $existingUser = User::where('student_ID', $data['student_ID'])
@@ -170,7 +181,7 @@ public function uploadCSV(Request $request)
                 'middle_name' => $data['middle_name'],
                 'last_name' => $data['last_name'],
                 'student_ID' => $data['student_ID'],
-                'birthday' => $data['birthday'],
+                'birthday' => $data['birthday'], // Formatted birthday
                 'sex' => $data['sex'],
                 'civil_status' => $data['civil_status'],
                 'contact_number' => $data['contact_number'],
@@ -182,35 +193,38 @@ public function uploadCSV(Request $request)
                 'course_ID' => $data['course_ID'],
                 'specialization' => $data['specialization'],
                 'year' => $data['year'],
-                // 'password' => bcrypt('password'),
                 'activation_token' => $activationToken,
-                'token_expires_at' => now()->addHours(24)
+                'token_expires_at' => now()->addHours(24),
             ]);
 
+            // Send an email to the newly created user
             Mail::to($user->email)->send(new AccountCreated($user));
         }
 
         fclose($handle);
-        
     }
+
+    // Retrieve all users with their associated course
     $users = User::with('course')->get();
-    
-        // Concatenate first, middle, and last names
-        $users = $users->map(function ($user) {
-            $user->full_name = $user->first_name . ' ' . $user->middle_name . ' ' . $user->last_name;
-            return $user;
-        });
 
-    return response()->json(['message' => 'CSV data uploaded successfully.', 'data' => $users], 200);
+    // Concatenate first, middle, and last names
+    $users = $users->map(function ($user) {
+        $user->full_name = $user->first_name . ' ' . $user->middle_name . ' ' . $user->last_name;
+        return $user;
+    });
+
+    return response()->json([
+        'message' => 'CSV data uploaded successfully.',
+        'data' => $users,
+    ], 200);
 }
-
 
 
 public function official_list(Request $request)
 {
     // Get the 'status' parameter from the request (defaults to 'Active' if not provided)
-  
-    
+
+
     // Retrieve users with the specified status and their related course
     $users = User::with(['course', 'employmentStatus.status'])
       ->addSelect(['status' => User_employment_status::select('employment_status_ID')
@@ -218,7 +232,7 @@ public function official_list(Request $request)
           ->latest()
           ->limit(1)]) // Add the latest employment_status_ID as 'status'
       ->get();
-    
+
 
     // Concatenate first, middle, and last names
     $users = $users->map(function ($user) {
