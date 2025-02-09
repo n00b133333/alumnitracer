@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\User_employment_status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EmploymentAnswerController extends Controller
 {
@@ -54,48 +55,53 @@ class EmploymentAnswerController extends Controller
     public function store(Request $request)
 {
     try {
-        // Validate the incoming request data
+        // Decode 'answers' if it's a string
+        if (is_string($request->answers)) {
+            $request->merge(['answers' => json_decode($request->answers, true)]);
+        }
+
         $validated = $request->validate([
             'user_ID' => 'required|exists:users,id',
             'status' => 'required|exists:employment_statuses,id',
-            'answers' => 'required|array', // Ensure answers is an array
-            'answers.*.id' => 'required|exists:employment_questions,id', // Each answer must have a valid question ID
-            'answers.*.value' => 'required', // Ensure each answer has a value
-            'files' => '',
+            'answers' => 'required|array',
+            'answers.*.id' => 'required|exists:employment_questions,id',
+            'answers.*.value' => 'required',
+
+            // File validation: must be an array & contain valid files
+            'files' => 'sometimes|array',
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048', // Validate file type and size
         ]);
 
-        // 1. Store or update the employment status first
+        // 1. Store employment status
         $userEmploymentStatus = User_employment_status::create([
             'user_ID' => $validated['user_ID'],
             'employment_status_ID' => $validated['status'],
         ]);
-        
 
-        // 2. Loop through the answers and store them
+        // 2. Process file uploads
         $employmentAnswers = [];
         $now = Carbon::now();
 
-
-        foreach ($validated['files'] as $file) {
-            if ($request->hasFile("files.{$file['id']}.value")) {
-                // If the answer is a file, upload it and store the file path
-                $file = $request->file("answers.{$file['id']}.value");
-                $filePath = $file->store('employment_answers', 'public'); // Store file in the 'employment_answers' directory under 'storage/app/public'
+        // Process file uploads
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $index => $file) {
+                // Store file in storage folder, for example in 'public/employment_answers'
+                $filePath = $file->store('employment_answers', 'public');
 
                 $employmentAnswers[] = [
                     'user_ID' => $validated['user_ID'],
-                    'employment_questions_ID' => $file['id'],
+                    'employment_questions_ID' => 4, // Use a default or dynamic assignment for question ID
                     'user_employment_status_ID' => $userEmploymentStatus->id,
-                    'answer' => $filePath, // Store the file path as the answer
+                    'answer' => 'http://127.0.0.1:8000/storage/'.$filePath, // Store the file path as the answer
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
-            } 
+            }
         }
+
+        // 3. Process regular answers
         foreach ($validated['answers'] as $answerData) {
-            // Check if the answer is an array (checkboxes), a file, or a single value
             if (is_array($answerData['value'])) {
-                // If the answer is an array, loop through each value and store them one by one
                 foreach ($answerData['value'] as $value) {
                     $employmentAnswers[] = [
                         'user_ID' => $validated['user_ID'],
@@ -107,7 +113,6 @@ class EmploymentAnswerController extends Controller
                     ];
                 }
             } else {
-                // If the answer is a single value, store it directly
                 $employmentAnswers[] = [
                     'user_ID' => $validated['user_ID'],
                     'employment_questions_ID' => $answerData['id'],
@@ -119,14 +124,16 @@ class EmploymentAnswerController extends Controller
             }
         }
 
-        // 3. Insert all the answers at once
+        // 4. Insert all answers into the database
         Employment_answer::insert($employmentAnswers);
 
+        // Fetch updated user data with employment status
         $user = User::with('employmentStatus.status')->findOrFail($validated['user_ID']);
+
         return response()->json([
             'message' => 'Employment status updated successfully.',
             'data' => $user,
-        ], 201); // 201 indicates resource created
+        ], 201);
 
     } catch (\Exception $e) {
         return response()->json([
